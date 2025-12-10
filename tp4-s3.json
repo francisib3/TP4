@@ -1,0 +1,41 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "S3 bucket",
+    "Resources": {
+      "S3Bucket": {
+        "Type": "AWS::S3::Bucket",
+        "DeletionPolicy": "Retain",
+        "Description": "S3 bucket creation",
+        "Properties": {
+          "BucketName": "polystudents3-tp4-1962292",
+          "AccessControl": "Private",
+          "PublicAccessBlockConfiguration": {
+            "BlockPublicAcls": true,
+            "BlockPublicPolicy": true,
+            "IgnorePublicAcls": true,
+            "RestrictPublicBuckets": true
+          },
+          "BucketEncryption": {
+            "ServerSideEncryptionConfiguration": [
+              {
+                "ServerSideEncryptionByDefault": {
+                  "SSEAlgorithm": "aws:kms",
+                  "KMSMasterKeyID": "arn:aws:kms:us-east-1:851725614863:key/29073aec-8791-4354-ae45-6053659b72b7b"
+                }
+              }
+            ]
+          },
+          "VersioningConfiguration": {
+            "Status": "Enabled"
+          }
+        }
+      }
+    },
+    "Outputs": {
+      "S3Bucket": {
+        "Description": "Bucket Created!",
+        "Value": { "Ref": "S3Bucket" }
+      }
+    }
+  }
+  
