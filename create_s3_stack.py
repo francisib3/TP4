@@ -9,6 +9,9 @@ from botocore.exceptions import ClientError
 TEMPLATE_FILE = os.path.join(os.getcwd(), "tp4-s3.json")
 STACK_NAME = "tp4-s3-bucket-stack"
 
+AWS_ACCESS_KEY_ID = 'ASIA4MTWNP4HXFJRIVNO'
+AWS_SECRET_ACCESS_KEY = 'naXW3ENsw1SneUssMIElQTXOC8j24r34jf4eio/l'
+SESSION_TOKEN = 'IQoJb3JpZ2luX2VjEA8aCXVzLXdlc3QtMiJGMEQCIB1gauhvPoQWypljUKaUvlAPcsysLH0kjf+u9bBeKwtqAiB4k5z4/9chkq1ILMnP59akFRjYbdbR/1Xtd4d6puKX2CrHAgjY//////////8BEAAaDDg1MTcyNTYxNDg2MyIMdZbatfIQJog0S2sEKpsCa/Q1qeQ5iSoVG89pECxnOhq5h/MTe8EhPSD9s9mfj1ya0y0oRv+eT9nuo3qsKwSgwLEIGMw9GK534Ld5REb1R5E2CYG2ALh97LqmmxjVI2nB37x6y+DV750ZyGzDzDyqlIeFMM/B9P4i5bRUb4p2AIVP+HlWjWhNL1T2P9D1XXtzAb6fT+XPcZyOZ3OOZK5TKg6lh3Pk9y9sjd0qmqx6jAKu3zMJxrByArV1l8KuDj8VHGXxcoE+dYODyA1Be4EvutUfT3AuuP9aaBBxwwhxgF4saezznjci+gN/brwDiIe/X3FCRIc7rr2vUk6/Npc5K/VGfTB0mva/l7asKT0ewcwn/hTtlqf9lSd5movt3FvFkvgh6GJNFZdgITCBlObJBjqeAenDpUON3L/NBRrh5feY1rDvMp16jVNP5cIeXMYcNxttBSYFif6wV1GaaKGkURk4kJ2cDpXiRD6gjfN9OMV1RtWKhpphzpWuOFxtWOaMRfcTi57diaxP+ddnsROYRUTzZT8eJrvz0sI0iPJ/3esbK3zyoiUTBZb78moSydOZhMNxfCUKL+IcDLUT29rPKXWSPz9pODIO9a/jqCJe9abl'
 REGION_NAME = 'us-east-1' 
 
 def load_and_adjust_template(template_path: str) -> str:
