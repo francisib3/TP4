@@ -44,6 +44,10 @@ Parameters:
     Type: String
     Default: LabInstanceProfile
 
+  FlowLogsBucketName:
+    Description: S3 bucket where VPC Flow Logs will be sent
+    Type: String
+    Default: polystudents3-tp4-1962292
 
 Resources:
   VPC:
@@ -276,14 +280,17 @@ Resources:
           ToPort: 9300
           CidrIp: 0.0.0.0/0     # Elasticsearch cluster ports
 
-  # VPCFlowLog:
-  #   Type: AWS::EC2::FlowLog
-  #   Properties:
-  #     ResourceId: !Ref VPC
-  #     ResourceType: VPC
-  #     TrafficType: REJECT
-  #     LogDestinationType: s3
-  #     LogDestination: arn:aws:s3:::polystudents3-tp4-1962292
+
+  VPCFlowLogs:
+    Type: AWS::EC2::FlowLog
+    Properties:
+      ResourceId: !Ref VPC
+      ResourceType: VPC
+      TrafficType: REJECT             
+      LogDestinationType: s3
+      LogDestination: !Sub arn:aws:s3:::${FlowLogsBucketName}
+      MaxAggregationInterval: 600 
+
 
   PublicInstanceAZ1:
     Type: AWS::EC2::Instance
