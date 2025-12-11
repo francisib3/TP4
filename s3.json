@@ -1,0 +1,92 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "S3 bucket for VPC Flow Logs",
+    "Resources": {
+      "S3Bucket": {
+        "Type": "AWS::S3::Bucket",
+        "DeletionPolicy": "Retain",
+        "Description": "S3 bucket creation",
+        "Properties": {
+          "BucketName": "polystudents3-tp4-1962292",
+          "AccessControl": "Private",
+          "PublicAccessBlockConfiguration": {
+            "BlockPublicAcls": true,
+            "BlockPublicPolicy": true,
+            "IgnorePublicAcls": true,
+            "RestrictPublicBuckets": true
+          },
+          "BucketEncryption": {
+            "ServerSideEncryptionConfiguration": [
+              {
+                "ServerSideEncryptionByDefault": {
+                  "SSEAlgorithm": "AES256"
+                }
+              }
+            ]
+          },
+          "VersioningConfiguration": {
+            "Status": "Enabled"
+          }
+        }
+      },
+  
+      "BucketPolicy": {
+        "Type": "AWS::S3::BucketPolicy",
+        "Properties": {
+          "Bucket": { "Ref": "S3Bucket" },
+          "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "AWSLogDeliveryWrite",
+                "Effect": "Allow",
+                "Principal": {
+                  "Service": "delivery.logs.amazonaws.com"
+                },
+                "Action": "s3:PutObject",
+                "Resource": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      { "Ref": "S3Bucket" },
+                      "/*"
+                    ]
+                  ]
+                },
+                "Condition": {
+                  "StringEquals": {
+                    "s3:x-amz-acl": "bucket-owner-full-control"
+                  }
+                }
+              },
+              {
+                "Sid": "AWSLogDeliveryAclCheck",
+                "Effect": "Allow",
+                "Principal": {
+                  "Service": "delivery.logs.amazonaws.com"
+                },
+                "Action": "s3:GetBucketAcl",
+                "Resource": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      { "Ref": "S3Bucket" }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "Outputs": {
+      "S3Bucket": {
+        "Description": "Bucket Created!",
+        "Value": { "Ref": "S3Bucket" }
+      }
+    }
+  }
+  
