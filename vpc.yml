@@ -39,6 +39,12 @@ Parameters:
     Type: String
     Default: 10.0.144.0/24
 
+  LabRole:
+    Description: Name of the IAM instance profile to attach to EC2 instances
+    Type: String
+    Default: LabInstanceProfile
+
+
 Resources:
   VPC:
     Type: AWS::EC2::VPC
@@ -49,6 +55,13 @@ Resources:
       Tags:
         - Key: Name
           Value: !Ref EnvironmentName
+  
+  # LabInstanceProfile:
+  #   Type: AWS::IAM::InstanceProfile
+  #   Properties:
+  #     InstanceProfileName: LabRole
+  #     Roles:
+  #       - LabRole
 
   PublicSubnet1:
     Type: AWS::EC2::Subnet
@@ -262,6 +275,143 @@ Resources:
           FromPort: 9200
           ToPort: 9300
           CidrIp: 0.0.0.0/0     # Elasticsearch cluster ports
+
+  # VPCFlowLog:
+  #   Type: AWS::EC2::FlowLog
+  #   Properties:
+  #     ResourceId: !Ref VPC
+  #     ResourceType: VPC
+  #     TrafficType: REJECT
+  #     LogDestinationType: s3
+  #     LogDestination: arn:aws:s3:::polystudents3-tp4-1962292
+
+  PublicInstanceAZ1:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-068c0051b15cdb816       
+      InstanceType: t2.micro
+      KeyName: polystudent-keypair          
+      SubnetId: !Ref PublicSubnet1
+      SecurityGroupIds:
+        - !Ref IngressSecurityGroup
+      IamInstanceProfile: !Ref LabRole
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            DeleteOnTermination: false
+            VolumeSize: 20
+
+  PublicInstanceAZ2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-068c0051b15cdb816
+      InstanceType: t2.micro
+      KeyName: polystudent-keypair
+      SubnetId: !Ref PublicSubnet2
+      SecurityGroupIds:
+        - !Ref IngressSecurityGroup
+      IamInstanceProfile: !Ref LabRole
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            DeleteOnTermination: false
+            VolumeSize: 20
+
+  PrivateInstanceAZ1:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-068c0051b15cdb816
+      InstanceType: t2.micro
+      KeyName: polystudent-keypair
+      SubnetId: !Ref PrivateSubnet1
+      SecurityGroupIds:
+        - !Ref IngressSecurityGroup
+      IamInstanceProfile: !Ref LabRole
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            DeleteOnTermination: false
+            VolumeSize: 20
+
+  PrivateInstanceAZ2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-068c0051b15cdb816
+      InstanceType: t2.micro
+      KeyName: polystudent-keypair
+      SubnetId: !Ref PrivateSubnet2
+      SecurityGroupIds:
+        - !Ref IngressSecurityGroup
+      IamInstanceProfile: !Ref LabRole
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            DeleteOnTermination: false
+            VolumeSize: 20
+
+  PublicInstanceAZ1NetworkPacketsInAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: "Alarm if network packets in > 1000 pkts/sec on PublicInstanceAZ1"
+      Namespace: "AWS/EC2"
+      MetricName: "NetworkPacketsIn"
+      Statistic: "Average"
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1000
+      ComparisonOperator: "GreaterThanThreshold"
+      TreatMissingData: "notBreaching"
+      Dimensions:
+        - Name: InstanceId
+          Value: !Ref PublicInstanceAZ1
+
+  PublicInstanceAZ2NetworkPacketsInAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: "Alarm if network packets in > 1000 pkts/sec on PublicInstanceAZ2"
+      Namespace: "AWS/EC2"
+      MetricName: "NetworkPacketsIn"
+      Statistic: "Average"
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1000
+      ComparisonOperator: "GreaterThanThreshold"
+      TreatMissingData: "notBreaching"
+      Dimensions:
+        - Name: InstanceId
+          Value: !Ref PublicInstanceAZ2
+
+  PrivateInstanceAZ1NetworkPacketsInAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: "Alarm if network packets in > 1000 pkts/sec on PrivateInstanceAZ1"
+      Namespace: "AWS/EC2"
+      MetricName: "NetworkPacketsIn"
+      Statistic: "Average"
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1000
+      ComparisonOperator: "GreaterThanThreshold"
+      TreatMissingData: "notBreaching"
+      Dimensions:
+        - Name: InstanceId
+          Value: !Ref PrivateInstanceAZ1
+
+  PrivateInstanceAZ2NetworkPacketsInAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: "Alarm if network packets in > 1000 pkts/sec on PrivateInstanceAZ2"
+      Namespace: "AWS/EC2"
+      MetricName: "NetworkPacketsIn"
+      Statistic: "Average"
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1000
+      ComparisonOperator: "GreaterThanThreshold"
+      TreatMissingData: "notBreaching"
+      Dimensions:
+        - Name: InstanceId
+          Value: !Ref PrivateInstanceAZ2
 
 
 Outputs:
