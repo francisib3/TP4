@@ -6,7 +6,7 @@ import boto3
 from botocore.exceptions import ClientError
 
 
-TEMPLATE_FILE = os.path.join(os.getcwd(), "tp4-s3.json")
+TEMPLATE_FILE = os.path.join(os.getcwd(), "s3.json")
 STACK_NAME = "tp4-s3-bucket-stack"
 
 AWS_ACCESS_KEY_ID = 'ASIA4MTWNP4HXFJRIVNO'
